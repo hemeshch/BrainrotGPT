@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "SamaThinking",
+  "version": "1.2.0",
+  "description": "When Sam Altman is thinking, you deserve to see it in full cinematic glory.",
+  "icons": {
+    "16": "img/icon_16.png",
+    "48": "img/icon_48.png",
+    "128": "img/icon_128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["img/video.mp4"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
