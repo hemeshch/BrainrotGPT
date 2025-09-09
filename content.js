@@ -1,17 +1,34 @@
 // Контейнер карточки
 const CONTAINER_SELECTOR = ".flex.w-full.items-start.justify-between.text-start.flex-col";
 const DATA_HOLDER_ATTR = "data-thinking-video-holder";
-const VIDEO_SRC = chrome.runtime.getURL("img/video.mp4");
 
-// Создаем видео: 400px, autoplay, loop, muted, с плавным появлением
+// Brainrot video collection
+const BRAINROT_VIDEOS = [
+  "img/vids/adrian-explain-friend-group.mp4",
+  "img/vids/ai-baby-fruits.mp4",
+  "img/vids/italian-brainrot-baby.mp4",
+  "img/vids/italian-brainrot.mp4",
+  "img/vids/karen-steal-baseball.mp4",
+  "img/vids/my-mother-ate-fries.mp4",
+  "img/vids/radioactive-shrimp.mp4",
+  "img/vids/subway-surfers.mp4"
+];
+
+// Get random brainrot video
+function getRandomBrainrotVideo() {
+  const randomIndex = Math.floor(Math.random() * BRAINROT_VIDEOS.length);
+  return chrome.runtime.getURL(BRAINROT_VIDEOS[randomIndex]);
+}
+
+// Создаем видео: 400px, autoplay, loop, с звуком, с плавным появлением
 function createVideo() {
   const v = document.createElement("video");
-  v.src = VIDEO_SRC;
+  v.src = getRandomBrainrotVideo();
   v.autoplay = true;
   v.loop = true;
-  v.muted = true;
+  v.muted = false; // Enable sound for brainrot experience
   v.playsInline = true;
-  v.setAttribute("muted", "");
+  v.volume = 1.0; // Full volume brainrot experience
   v.setAttribute("autoplay", "");
   v.setAttribute("loop", "");
   v.setAttribute("playsinline", "");
