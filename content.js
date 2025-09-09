@@ -1,4 +1,4 @@
-// Контейнер карточки
+// Card container
 const CONTAINER_SELECTOR = ".flex.w-full.items-start.justify-between.text-start.flex-col";
 const DATA_HOLDER_ATTR = "data-thinking-video-holder";
 
@@ -20,7 +20,7 @@ function getRandomBrainrotVideo() {
   return chrome.runtime.getURL(BRAINROT_VIDEOS[randomIndex]);
 }
 
-// Создаем видео: 400px, autoplay, loop, с звуком, с плавным появлением
+// Create video: 400px, autoplay, loop, with sound, with fade-in effect
 function createVideo() {
   const v = document.createElement("video");
   v.src = getRandomBrainrotVideo();
@@ -34,13 +34,13 @@ function createVideo() {
   v.setAttribute("playsinline", "");
   v.preload = "metadata";
 
-  // Размер и внешний вид
+  // Size and appearance
   v.style.width = "400px";
   v.style.height = "auto";
   v.style.display = "block";
   v.style.marginTop = "8px";
 
-  // Эффект появления
+  // Fade-in effect
   v.style.opacity = "0";
   v.style.transform = "translateY(4px)";
   v.style.transition = "opacity 240ms ease, transform 240ms ease";
@@ -49,7 +49,7 @@ function createVideo() {
 }
 
 function fadeIn(el) {
-  // Двойной requestAnimationFrame для корректного старта transition
+  // Double requestAnimationFrame for proper transition start
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       el.style.opacity = "1";
@@ -65,7 +65,7 @@ function ensureHolder(column) {
   holder = document.createElement("div");
   holder.setAttribute(DATA_HOLDER_ATTR, "1");
 
-  // Вставляем сразу после первой кнопки-заголовка
+  // Insert right after the first button-header
   const firstChild = column.firstElementChild;
   if (firstChild && firstChild.tagName === "BUTTON") {
     firstChild.after(holder);
@@ -139,7 +139,7 @@ function observe() {
   });
 }
 
-// Старт
+// Start
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     initialScan();
