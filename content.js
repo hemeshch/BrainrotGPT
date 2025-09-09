@@ -17,13 +17,24 @@ const BRAINROT_VIDEOS = [
 // Get random brainrot video
 function getRandomBrainrotVideo() {
   const randomIndex = Math.floor(Math.random() * BRAINROT_VIDEOS.length);
-  return chrome.runtime.getURL(BRAINROT_VIDEOS[randomIndex]);
+  try {
+    return chrome.runtime.getURL(BRAINROT_VIDEOS[randomIndex]);
+  } catch (e) {
+    // Fallback if chrome.runtime is not available
+    console.warn('Chrome runtime not available, extension may need reload');
+    return null;
+  }
 }
 
 // Create video: 400px, autoplay, loop, with sound, with fade-in effect
 function createVideo() {
   const v = document.createElement("video");
-  v.src = getRandomBrainrotVideo();
+  const videoSrc = getRandomBrainrotVideo();
+  if (!videoSrc) {
+    // Extension context invalid, don't create video
+    return null;
+  }
+  v.src = videoSrc;
   v.autoplay = true;
   v.loop = true;
   v.muted = false; // Enable sound for brainrot experience
@@ -34,11 +45,13 @@ function createVideo() {
   v.setAttribute("playsinline", "");
   v.preload = "metadata";
 
-  // Size and appearance
-  v.style.width = "400px";
+  // Size and appearance - smaller for vertical videos
+  v.style.width = "300px";
+  v.style.maxHeight = "400px";
   v.style.height = "auto";
   v.style.display = "block";
   v.style.marginTop = "8px";
+  v.style.objectFit = "contain";
 
   // Fade-in effect
   v.style.opacity = "0";
@@ -89,8 +102,10 @@ function updateColumn(column) {
     const holder = ensureHolder(column);
     if (!holder.querySelector("video")) {
       const v = createVideo();
-      holder.replaceChildren(v);
-      fadeIn(v);
+      if (v) {
+        holder.replaceChildren(v);
+        fadeIn(v);
+      }
     }
   } else {
     removeHolder(column);
