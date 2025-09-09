@@ -17,16 +17,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-        "img/vids/adrian-explain-friend-group.mp4",
-        "img/vids/ai-baby-fruits.mp4",
-        "img/vids/italian-brainrot-baby.mp4",
-        "img/vids/italian-brainrot.mp4",
-        "img/vids/karen-steal-baseball.mp4",
-        "img/vids/my-mother-ate-fries.mp4",
-        "img/vids/radioactive-shrimp.mp4",
-        "img/vids/subway-surfers.mp4"
-      ],
+      "resources": [],
       "matches": ["<all_urls>"]
     }
   ]
