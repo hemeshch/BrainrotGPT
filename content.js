@@ -3,7 +3,7 @@ const CONTAINER_SELECTOR = '.flex.w-full.items-start.justify-between.text-start.
 const DATA_HOLDER_ATTR = 'data-thinking-video-holder'
 
 // Brainrot video collection
-const BRAINROT_VIDEOS = ['img/vids/ai-baby-fruits.mp4', 'img/vids/italian-brainrot-baby.mp4', 'img/vids/italian-brainrot.mp4', 'img/vids/my-mother-ate-fries.mp4', 'img/vids/subway-surfers.mp4']
+const BRAINROT_VIDEOS = ['img/vids/ai-baby-fruits.mp4', 'img/vids/italian-brainrot-baby.mp4', 'img/vids/italian-brainrot.mp4', 'img/vids/my-mother-ate-fries.mp4', 'img/vids/subway-surfers.mp4', 'img/vids/67.mp4', 'img/vids/drippy.mp4']
 
 // Get random brainrot video
 function getRandomBrainrotVideo() {
