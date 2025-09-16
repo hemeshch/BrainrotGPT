@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠💥 WELCOME TO BRAINROTGPT! 💥🧠</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff8000);
+            background-size: 400% 400%;
+            animation: rainbow 3s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        @keyframes rainbow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border: 5px solid #ff00ff;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+            margin: 20px;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
+            }
+
+            to {
+                box-shadow: 0 0 50px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ff00ff;
+            text-shadow: 3px 3px 0 #00ffff, 6px 6px 0 #ffff00;
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ff8000;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .screenshot {
+            max-width: 100%;
+            height: auto;
+            border: 3px solid #00ffff;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .features {
+            background: rgba(255, 255, 0, 0.3);
+            border: 2px dashed #ff00ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .features h2 {
+            color: #ff00ff;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0 #00ffff;
+        }
+
+        .features ul {
+            list-style: none;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .features li {
+            margin: 10px 0;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            border: 1px solid #ff8000;
+        }
+
+        .emoji {
+            font-size: 2rem;
+            animation: spin 2s linear infinite;
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 1rem;
+            color: #666;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .marquee {
+            background: #000;
+            color: #00ff00;
+            padding: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .marquee span {
+            display: inline-block;
+            animation: scroll 10s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .chatgpt-btn {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: 3px solid #ffff00;
+            color: #000;
+            font-family: 'Comic Neue', 'Comic Sans MS', cursive;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin: 20px 0;
+            text-shadow: 1px 1px 0 #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .chatgpt-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+        }
+
+        .chatgpt-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧠💥 BRAINROTGPT 💥🧠</h1>
+        <div class="subtitle"></div>
+
+        <div class="marquee">
+            <span>*** EPIC BRAINROT VIDEOS WHILE CHATGPT THINKS *** YOUR MOM LOVES THIS ***</span>
+        </div>
+
+        <p class="description">
+            BrainrotGPT is a revolutionary Chrome extension that serves you brainrot classics whenever ChatGPT is
+            thinking.
+
+            <br /><br>
+
+            It doesn't mess with regular ChatGPT, just inserts a cute brainrot video. Have fun!
+        </p>
+
+        <button class="chatgpt-btn" onclick="window.open('https://chatgpt.com/?model=gpt-5-thinking', '_blank')">
+            🚀 Open ChatGPT 🚀
+        </button>
+
+        <img src="img/screenshot.png" alt="BrainrotGPT in action!" class="screenshot">
+
+        <div class="features">
+            <h2>✨ APPROVED BY REDDIT AND DISCORD MODS ✨</h2>
+        </div>
+
+        <div class="footer">
+            Made with <span class="emoji">💀</span> and pure brainrot<br>
+            Now go chat with ChatGPT and experience the CHAOS! 🚀
+        </div>
+    </div>
+</body>
+
+</html>
