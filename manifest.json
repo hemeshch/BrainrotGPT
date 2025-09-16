@@ -10,15 +10,15 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["<all_urls>"],
+			"matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"],
 			"js": ["content.js"],
 			"run_at": "document_idle"
 		}
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["img/vids/adrian-explain-friend-group.mp4", "img/vids/ai-baby-fruits.mp4", "img/vids/italian-brainrot-baby.mp4", "img/vids/italian-brainrot.mp4", "img/vids/karen-steal-baseball.mp4", "img/vids/my-mother-ate-fries.mp4", "img/vids/radioactive-shrimp.mp4", "img/vids/subway-surfers.mp4"],
-			"matches": ["<all_urls>"]
+			"resources": ["img/vids/67.mp4", "img/vids/ai-baby-fruits.mp4", "img/vids/drippy.mp4", "img/vids/italian-brainrot-baby.mp4", "img/vids/italian-brainrot.mp4", "img/vids/subway-surfers.mp4"],
+			"matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"]
 		}
 	]
 }

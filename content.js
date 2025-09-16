@@ -3,13 +3,33 @@ const CONTAINER_SELECTOR = '.flex.w-full.items-start.justify-between.text-start.
 const DATA_HOLDER_ATTR = 'data-thinking-video-holder'
 
 // Brainrot video collection
-const BRAINROT_VIDEOS = ['img/vids/ai-baby-fruits.mp4', 'img/vids/italian-brainrot-baby.mp4', 'img/vids/italian-brainrot.mp4', 'img/vids/my-mother-ate-fries.mp4', 'img/vids/subway-surfers.mp4', 'img/vids/67.mp4', 'img/vids/drippy.mp4']
+const BRAINROT_VIDEOS = ['img/vids/ai-baby-fruits.mp4', 'img/vids/italian-brainrot-baby.mp4', 'img/vids/italian-brainrot.mp4', 'img/vids/subway-surfers.mp4', 'img/vids/67.mp4', 'img/vids/drippy.mp4']
 
-// Get random brainrot video
+// Track recently played videos to avoid repeats
+let recentVideos = []
+const MAX_RECENT = Math.min(3, BRAINROT_VIDEOS.length - 1) // Remember last 3 videos, but never more than total-1
+
+// Get random brainrot video (avoids recent repeats)
 function getRandomBrainrotVideo() {
-	const randomIndex = Math.floor(Math.random() * BRAINROT_VIDEOS.length)
 	try {
-		return chrome.runtime.getURL(BRAINROT_VIDEOS[randomIndex])
+		let availableVideos = BRAINROT_VIDEOS.filter((video) => !recentVideos.includes(video))
+
+		// If all videos are recent (shouldn't happen with proper MAX_RECENT), reset and use all
+		if (availableVideos.length === 0) {
+			recentVideos = []
+			availableVideos = BRAINROT_VIDEOS
+		}
+
+		const randomIndex = Math.floor(Math.random() * availableVideos.length)
+		const selectedVideo = availableVideos[randomIndex]
+
+		// Add to recent list and maintain size
+		recentVideos.push(selectedVideo)
+		if (recentVideos.length > MAX_RECENT) {
+			recentVideos.shift() // Remove oldest
+		}
+
+		return chrome.runtime.getURL(selectedVideo)
 	} catch (e) {
 		// Fallback if chrome.runtime is not available
 		console.warn('Chrome runtime not available, extension may need reload')
@@ -88,14 +108,19 @@ function updateColumn(column) {
 	if (!column || !(column instanceof Element)) return
 
 	const loading = !!column.querySelector('.loading-shimmer')
+	console.log('BrainrotGPT: Column update - loading:', loading)
 
 	if (loading) {
 		const holder = ensureHolder(column)
 		if (!holder.querySelector('video')) {
+			console.log('BrainrotGPT: Creating new video')
 			const v = createVideo()
 			if (v) {
 				holder.replaceChildren(v)
 				fadeIn(v)
+				console.log('BrainrotGPT: Video added successfully')
+			} else {
+				console.log('BrainrotGPT: Failed to create video')
 			}
 		}
 	} else {
@@ -145,13 +170,18 @@ function observe() {
 	})
 }
 
+// Debug logging
+console.log('BrainrotGPT: Extension loaded')
+
 // Start
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', () => {
+		console.log('BrainrotGPT: DOM loaded, starting')
 		initialScan()
 		observe()
 	})
 } else {
+	console.log('BrainrotGPT: Starting immediately')
 	initialScan()
 	observe()
 }
