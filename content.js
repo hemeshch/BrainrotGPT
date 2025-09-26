@@ -1,5 +1,11 @@
+// Detect if we're on Claude or ChatGPT
+const isClaude = window.location.hostname === 'claude.ai'
+const isChatGPT = window.location.hostname === 'chatgpt.com' || window.location.hostname === 'chat.openai.com'
+
 // Card container - matches both thinking and streaming states
-const CONTAINER_SELECTOR = 'article[data-testid^="conversation-turn"], .flex.w-full.items-start.justify-between.text-start.flex-col'
+const CONTAINER_SELECTOR = isClaude
+	? '[data-is-streaming]'  // Match any element with the attribute, we'll check value later
+	: 'article[data-testid^="conversation-turn"]'  // Only match article elements for ChatGPT
 const DATA_HOLDER_ATTR = 'data-thinking-video-holder'
 
 // Brainrot video collection
@@ -173,20 +179,46 @@ function fadeIn(el) {
 }
 
 function ensureHolder(column) {
-	let holder = column.querySelector(`div[${DATA_HOLDER_ATTR}]`)
-	if (holder) return holder
+	// Check if there's already a holder anywhere in the article (for ChatGPT)
+	// This prevents duplicate videos in nested containers
+	if (!isClaude && column.tagName === 'ARTICLE') {
+		// Check entire article for existing holder
+		let existingHolder = column.querySelector(`div[${DATA_HOLDER_ATTR}]`)
+		if (existingHolder) return existingHolder
+	} else {
+		// For Claude and other containers, check normally
+		let holder = column.querySelector(`div[${DATA_HOLDER_ATTR}]`)
+		if (holder) return holder
+	}
 
-	holder = document.createElement('div')
+	const holder = document.createElement('div')
 	holder.setAttribute(DATA_HOLDER_ATTR, '1')
 
-	// For article elements, find the best place to insert
-	if (column.tagName === 'ARTICLE') {
-		// Look for the assistant message content area
-		const messageArea = column.querySelector('[data-message-author-role="assistant"]')
-		if (messageArea) {
-			messageArea.parentElement.insertBefore(holder, messageArea)
+	// Claude.ai specific placement
+	if (isClaude) {
+		// For Claude, insert at the beginning of the streaming container
+		column.insertBefore(holder, column.firstChild)
+	}
+	// ChatGPT specific placement - improved to find the right spot
+	else if (column.tagName === 'ARTICLE') {
+		// For thinking state, look for the loading-shimmer area
+		const thinkingArea = column.querySelector('.loading-shimmer')
+		if (thinkingArea) {
+			// Insert after the thinking header
+			const parent = thinkingArea.closest('div[class*="flex"]')
+			if (parent && parent.parentElement) {
+				parent.parentElement.insertBefore(holder, parent.nextSibling)
+			} else {
+				column.appendChild(holder)
+			}
 		} else {
-			column.appendChild(holder)
+			// For other states, look for assistant message area
+			const messageArea = column.querySelector('[data-message-author-role="assistant"]')
+			if (messageArea) {
+				messageArea.parentElement.insertBefore(holder, messageArea)
+			} else {
+				column.appendChild(holder)
+			}
 		}
 	} else {
 		// Original logic for other containers
@@ -214,17 +246,50 @@ function updateColumn(column) {
 		return
 	}
 
-	// Check for both thinking (.loading-shimmer) and streaming (.streaming-animation) states
-	const isThinking = !!column.querySelector('.loading-shimmer')
-	const isStreaming = !!column.querySelector('.streaming-animation')
-	const shouldShowVideo = isThinking || isStreaming
+	let shouldShowVideo = false
+	const hasVideoHolder = !!column.querySelector(`div[${DATA_HOLDER_ATTR}]`)
 
-	console.log('BrainrotGPT: Column update - thinking:', isThinking, 'streaming:', isStreaming, 'enabled:', videosEnabled)
+	// Claude detection - strict attribute check (must be exactly "true")
+	if (isClaude) {
+		const streamingAttr = column.getAttribute('data-is-streaming')
+		shouldShowVideo = streamingAttr === 'true'
+		console.log('BrainrotGPT (Claude): data-is-streaming:', streamingAttr, 'show video:', shouldShowVideo, 'has video:', hasVideoHolder, 'enabled:', videosEnabled)
+	}
+	// ChatGPT detection - class-based
+	else {
+		const isThinking = !!column.querySelector('.loading-shimmer')
+		const isStreaming = !!column.querySelector('.streaming-animation')
+		shouldShowVideo = isThinking || isStreaming
 
+		console.log('BrainrotGPT (ChatGPT): Thinking:', isThinking, 'streaming:', isStreaming, 'should show:', shouldShowVideo, 'has video:', hasVideoHolder, 'enabled:', videosEnabled)
+
+		// For ChatGPT articles, track processing state
+		if (column.tagName === 'ARTICLE') {
+			const wasProcessed = column.dataset.brainrotState === 'active'
+
+			// State transition: not active -> active (show video)
+			if (shouldShowVideo && !wasProcessed) {
+				column.dataset.brainrotState = 'active'
+				// Continue to create video below
+			}
+			// State transition: active -> not active (remove video)
+			else if (!shouldShowVideo && wasProcessed) {
+				column.dataset.brainrotState = 'inactive'
+				// Continue to remove video below
+			}
+			// Same state, prevent duplicate operations
+			else if (shouldShowVideo && wasProcessed && hasVideoHolder) {
+				return // Video already showing, skip
+			}
+		}
+	}
+
+	// Execute video show/hide based on current state
 	if (shouldShowVideo) {
-		const holder = ensureHolder(column)
-		if (!holder.querySelector('video')) {
-			console.log('BrainrotGPT: Creating new video (thinking:', isThinking, 'streaming:', isStreaming, ')')
+		// Only create video if it doesn't exist
+		if (!hasVideoHolder) {
+			const holder = ensureHolder(column)
+			console.log('BrainrotGPT: Creating new video')
 			const v = createVideo()
 			if (v) {
 				holder.replaceChildren(v)
@@ -235,7 +300,15 @@ function updateColumn(column) {
 			}
 		}
 	} else {
-		removeHolder(column)
+		// Always remove video when it shouldn't be showing
+		if (hasVideoHolder) {
+			console.log('BrainrotGPT: Removing video because thinking/streaming stopped')
+			removeHolder(column)
+			// Clear the state for ChatGPT
+			if (!isClaude && column.tagName === 'ARTICLE') {
+				delete column.dataset.brainrotState
+			}
+		}
 	}
 }
 
@@ -248,6 +321,13 @@ function observe() {
 		const touched = new Set()
 
 		for (const m of mutations) {
+			// Special handling for Claude's data-is-streaming attribute changes
+			if (isClaude && m.type === 'attributes' && m.attributeName === 'data-is-streaming') {
+				console.log('BrainrotGPT: data-is-streaming attribute changed on', m.target)
+				touched.add(m.target)
+				continue
+			}
+
 			const nodes = []
 			if (m.type === 'childList') {
 				m.addedNodes.forEach((n) => nodes.push(n))
@@ -272,27 +352,31 @@ function observe() {
 		touched.forEach(updateColumn)
 	})
 
-	observer.observe(document.documentElement || document.body, {
+	// Different observation config for Claude vs ChatGPT
+	const observeConfig = {
 		childList: true,
 		subtree: true,
 		characterData: true,
 		attributes: true,
-		attributeFilter: ['class', 'style'],
-	})
+		attributeFilter: isClaude ? ['data-is-streaming', 'class', 'style'] : ['class', 'style'],
+	}
+
+	observer.observe(document.documentElement || document.body, observeConfig)
 }
 
 // Debug logging
-console.log('BrainrotGPT: Extension loaded')
+const siteName = isClaude ? 'Claude' : (isChatGPT ? 'ChatGPT' : 'Unknown')
+console.log(`BrainrotGPT: Extension loaded on ${siteName}`)
 
 // Start
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', () => {
-		console.log('BrainrotGPT: DOM loaded, starting')
+		console.log(`BrainrotGPT: DOM loaded on ${siteName}, starting`)
 		initialScan()
 		observe()
 	})
 } else {
-	console.log('BrainrotGPT: Starting immediately')
+	console.log(`BrainrotGPT: Starting immediately on ${siteName}`)
 	initialScan()
 	observe()
 }

@@ -19,7 +19,7 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"],
+			"matches": ["https://chat.openai.com/*", "https://chatgpt.com/*", "https://claude.ai/*"],
 			"js": ["content.js"],
 			"run_at": "document_idle"
 		}
@@ -27,7 +27,7 @@
 	"web_accessible_resources": [
 		{
 			"resources": ["img/vids/67.mp4", "img/vids/ai-baby-fruits.mp4", "img/vids/drippy.mp4", "img/vids/italian-brainrot-baby.mp4", "img/vids/italian-brainrot.mp4", "img/vids/subway-surfers.mp4", "img/screenshot.png"],
-			"matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"]
+			"matches": ["https://chat.openai.com/*", "https://chatgpt.com/*", "https://claude.ai/*"]
 		}
 	],
 	"background": {

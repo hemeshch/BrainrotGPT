@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateStatus(enabled);
 
         // Send message to content scripts
-        const tabs = await chrome.tabs.query({ url: ['https://chat.openai.com/*', 'https://chatgpt.com/*'] });
+        const tabs = await chrome.tabs.query({ url: ['https://chat.openai.com/*', 'https://chatgpt.com/*', 'https://claude.ai/*'] });
         tabs.forEach(tab => {
             chrome.tabs.sendMessage(tab.id, {
                 action: 'toggleVideos',
