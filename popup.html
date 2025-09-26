@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainrotGPT Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 350px;
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff8000);
+            background-size: 400% 400%;
+            animation: rainbow 3s ease infinite;
+        }
+
+        @keyframes rainbow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border: 5px solid #ff00ff;
+            padding: 25px;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
+            }
+
+            to {
+                box-shadow: 0 0 50px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff00ff;
+            text-shadow: 3px 3px 0 #00ffff, 6px 6px 0 #ffff00;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .toggle-container {
+            background: rgba(255, 255, 0, 0.3);
+            border: 2px dashed #ff00ff;
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ff8000;
+            text-shadow: 1px 1px 0 #000;
+            transition: color 0.3s;
+        }
+
+        .toggle-container:has(input:not(:checked)) .toggle-label {
+            color: #888;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            transition: 0.4s;
+            border-radius: 30px;
+            border: 2px solid #ffff00;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "💀";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 2px;
+            background: #fff;
+            transition: 0.4s;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        input:checked+.slider {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+        }
+
+        input:checked+.slider:before {
+            content: "🧠";
+            transform: translateX(30px);
+        }
+
+        .status {
+            background: #000;
+            color: #00ff00;
+            padding: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .emoji-rain {
+            font-size: 2rem;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .emoji-rain span {
+            display: inline-block;
+            animation: spin 2s linear infinite;
+            margin: 0 5px;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .chatgpt-btn {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: 3px solid #ffff00;
+            color: #000;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-shadow: 1px 1px 0 #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .chatgpt-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+        }
+
+        .chatgpt-btn:active {
+            transform: scale(0.95);
+        }
+
+        .footer {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #666;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>BRAINROTGPT</h1>
+
+        <div class="emoji-rain">
+            <span>💀</span>
+            <span>🧠</span>
+            <span>🔥</span>
+            <span>😭</span>
+            <span>💯</span>
+        </div>
+
+        <div class="toggle-container">
+            <span class="toggle-label" id="toggle-text">BRAINROT ACTIVATED</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="video-toggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="status" id="status">*** VIDEOS ENABLED ***</div>
+
+        <a href="https://chatgpt.com" target="_blank" class="chatgpt-btn">
+            🚀 OPEN CHATGPT 🚀
+        </a>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

@@ -12,6 +12,36 @@ const MAX_RECENT = Math.min(3, BRAINROT_VIDEOS.length - 1) // Remember last 3 vi
 // Mute state persistence
 let isMuted = localStorage.getItem('brainrot-muted') === 'true'
 
+// Videos enabled state
+let videosEnabled = true
+
+// Load videos enabled state
+chrome.storage.sync.get(['videosEnabled'], (result) => {
+	videosEnabled = result.videosEnabled !== false // Default to true
+	if (!videosEnabled) {
+		// Remove any existing videos if they're disabled
+		document.querySelectorAll(`div[${DATA_HOLDER_ATTR}]`).forEach(holder => {
+			holder.parentNode?.removeChild(holder)
+		})
+	}
+})
+
+// Listen for toggle messages from popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	if (message.action === 'toggleVideos') {
+		videosEnabled = message.enabled
+		if (!videosEnabled) {
+			// Remove all videos
+			document.querySelectorAll(`div[${DATA_HOLDER_ATTR}]`).forEach(holder => {
+				holder.parentNode?.removeChild(holder)
+			})
+		} else {
+			// Re-scan for active thinking/streaming
+			initialScan()
+		}
+	}
+})
+
 // Get random brainrot video (avoids recent repeats)
 function getRandomBrainrotVideo() {
 	try {
@@ -178,12 +208,18 @@ function removeHolder(column) {
 function updateColumn(column) {
 	if (!column || !(column instanceof Element)) return
 
+	// Skip if videos are disabled
+	if (!videosEnabled) {
+		removeHolder(column)
+		return
+	}
+
 	// Check for both thinking (.loading-shimmer) and streaming (.streaming-animation) states
 	const isThinking = !!column.querySelector('.loading-shimmer')
 	const isStreaming = !!column.querySelector('.streaming-animation')
 	const shouldShowVideo = isThinking || isStreaming
 
-	console.log('BrainrotGPT: Column update - thinking:', isThinking, 'streaming:', isStreaming)
+	console.log('BrainrotGPT: Column update - thinking:', isThinking, 'streaming:', isStreaming, 'enabled:', videosEnabled)
 
 	if (shouldShowVideo) {
 		const holder = ensureHolder(column)
