@@ -1,8 +1,8 @@
 {
 	"manifest_version": 3,
 	"name": "BrainrotGPT",
-	"version": "1.3.0",
-	"description": "Watch epic brainrot videos whenever ChatGPT is thinking.",
+	"version": "3.0.0",
+	"description": "Watch epic brainrot videos whenever ChatGPT is thinking or streaming.",
 	"icons": {
 		"16": "img/icon_16.png",
 		"48": "img/icon_48.png",

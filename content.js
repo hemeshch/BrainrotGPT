@@ -1,5 +1,5 @@
-// Card container
-const CONTAINER_SELECTOR = '.flex.w-full.items-start.justify-between.text-start.flex-col'
+// Card container - matches both thinking and streaming states
+const CONTAINER_SELECTOR = 'article[data-testid^="conversation-turn"], .flex.w-full.items-start.justify-between.text-start.flex-col'
 const DATA_HOLDER_ATTR = 'data-thinking-video-holder'
 
 // Brainrot video collection
@@ -149,12 +149,23 @@ function ensureHolder(column) {
 	holder = document.createElement('div')
 	holder.setAttribute(DATA_HOLDER_ATTR, '1')
 
-	// Insert right after the first button-header
-	const firstChild = column.firstElementChild
-	if (firstChild && firstChild.tagName === 'BUTTON') {
-		firstChild.after(holder)
+	// For article elements, find the best place to insert
+	if (column.tagName === 'ARTICLE') {
+		// Look for the assistant message content area
+		const messageArea = column.querySelector('[data-message-author-role="assistant"]')
+		if (messageArea) {
+			messageArea.parentElement.insertBefore(holder, messageArea)
+		} else {
+			column.appendChild(holder)
+		}
 	} else {
-		column.appendChild(holder)
+		// Original logic for other containers
+		const firstChild = column.firstElementChild
+		if (firstChild && firstChild.tagName === 'BUTTON') {
+			firstChild.after(holder)
+		} else {
+			column.appendChild(holder)
+		}
 	}
 	return holder
 }
@@ -167,13 +178,17 @@ function removeHolder(column) {
 function updateColumn(column) {
 	if (!column || !(column instanceof Element)) return
 
-	const loading = !!column.querySelector('.loading-shimmer')
-	console.log('BrainrotGPT: Column update - loading:', loading)
+	// Check for both thinking (.loading-shimmer) and streaming (.streaming-animation) states
+	const isThinking = !!column.querySelector('.loading-shimmer')
+	const isStreaming = !!column.querySelector('.streaming-animation')
+	const shouldShowVideo = isThinking || isStreaming
 
-	if (loading) {
+	console.log('BrainrotGPT: Column update - thinking:', isThinking, 'streaming:', isStreaming)
+
+	if (shouldShowVideo) {
 		const holder = ensureHolder(column)
 		if (!holder.querySelector('video')) {
-			console.log('BrainrotGPT: Creating new video')
+			console.log('BrainrotGPT: Creating new video (thinking:', isThinking, 'streaming:', isStreaming, ')')
 			const v = createVideo()
 			if (v) {
 				holder.replaceChildren(v)
