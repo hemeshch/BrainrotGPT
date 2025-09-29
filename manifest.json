@@ -3,7 +3,7 @@
 	"name": "BrainrotGPT",
 	"version": "3.0.0",
 	"description": "Watch epic brainrot videos whenever ChatGPT is thinking or streaming.",
-	"permissions": ["storage"],
+	"permissions": ["storage", "tabs"],
 	"action": {
 		"default_popup": "popup.html",
 		"default_icon": {

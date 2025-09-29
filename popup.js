@@ -19,16 +19,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Update status text
         updateStatus(enabled);
 
-        // Send message to content scripts
+        // Get all tabs with ChatGPT or Claude
         const tabs = await chrome.tabs.query({ url: ['https://chat.openai.com/*', 'https://chatgpt.com/*', 'https://claude.ai/*'] });
+
+        // Reload all matching tabs
         tabs.forEach(tab => {
-            chrome.tabs.sendMessage(tab.id, {
-                action: 'toggleVideos',
-                enabled: enabled
-            }).catch(() => {
-                // Ignore errors for tabs where content script isn't loaded
-            });
+            chrome.tabs.reload(tab.id);
         });
+
+        // Close the popup after triggering reload
+        if (tabs.length > 0) {
+            setTimeout(() => {
+                window.close();
+            }, 100);
+        }
     });
 
     function updateStatus(enabled) {
